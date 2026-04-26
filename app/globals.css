@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Print: each .slide-print becomes one page at exact 1280x720 */
+@page {
+  size: 1280px 720px;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  .print-root {
+    display: block;
+  }
+
+  .slide-print {
+    page-break-after: always;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    overflow: hidden;
+  }
+
+  .slide-print:last-child {
+    page-break-after: auto;
+  }
+
+  /* Force light color scheme for print */
+  :root {
+    color-scheme: light;
+  }
+}
