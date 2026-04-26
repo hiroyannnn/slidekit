@@ -1,6 +1,18 @@
-# Slides Template
+# slidekit
 
-React (Next.js + Tailwind) で書くスライドテンプレ。ブラウザで発表 → PlaywrightでPDF出力。
+React (Next.js + Tailwind) で書くスライドテンプレート。ブラウザで発表 → PlaywrightでPDF出力。
+
+## Quick Start
+
+`Use this template` で複製した直後に:
+
+1. `pnpm install && pnpm exec playwright install chromium`
+2. `package.json` の `name` をプロジェクト名に変更
+3. `lib/slides.tsx` を編集してスライドを差し替え(サンプル4枚が編集起点)
+4. `pnpm dev` で http://localhost:3000 を開いて確認
+5. `pnpm export:pdf` で `slides.pdf` を生成
+
+> Claude Code で作業する場合は `CLAUDE.md` の指針も参照。
 
 ## セットアップ
 
