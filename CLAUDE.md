@@ -107,7 +107,7 @@ PDF 出力時も `document.fonts.ready` 待機があるので反映される。
 ```bash
 pnpm dev          # 開発サーバ(http://localhost:3000)
 pnpm build        # プロダクションビルド
-pnpm export:pdf   # slides.pdf を生成(build 不要、自前で next start)
+pnpm export:pdf   # slides.pdf を生成(事前に pnpm build が必要、内部で next start を spawn)
 ```
 
 ## 開発手順の原則
