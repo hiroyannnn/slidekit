@@ -9,6 +9,7 @@ export type SlideDef = {
   id: string;
   component: ComponentType<SlideProps>;
   notes?: string;
+  draft?: boolean;
 };
 
 export const SLIDE_WIDTH = 1280;
