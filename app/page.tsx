@@ -13,9 +13,13 @@ export default function DeckPage() {
 
   const toggleFullscreen = useCallback(() => {
     if (document.fullscreenElement) {
-      void document.exitFullscreen();
+      document.exitFullscreen().catch((err) => {
+        console.warn("Failed to exit fullscreen:", err);
+      });
     } else {
-      void document.documentElement.requestFullscreen();
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.warn("Failed to enter fullscreen:", err);
+      });
     }
   }, []);
 
@@ -56,7 +60,12 @@ export default function DeckPage() {
           window.location.hash = String(next + 1);
           return next;
         });
-      } else if (e.key === "f" || e.key === "F") {
+      } else if (
+        (e.key === "f" || e.key === "F") &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
         toggleFullscreen();
       }
     };
