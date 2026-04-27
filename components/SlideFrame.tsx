@@ -7,17 +7,21 @@ type Props = {
   children: ReactNode;
   /** When true, disables scaling (for PDF export). Set via ?print=1 */
   print?: boolean;
+  /** When set, renders as a fixed-width thumbnail (for overview mode). */
+  thumbnailWidth?: number;
 };
 
 /**
  * Renders a slide at fixed 1280x720, scaled to fit viewport on screen.
  * For print, no scaling is applied so @page size matches exactly.
+ * For thumbnailWidth, scales down to that width preserving the 16:9 ratio.
  */
-export function SlideFrame({ children, print = false }: Props) {
+export function SlideFrame({ children, print = false, thumbnailWidth }: Props) {
   const [scale, setScale] = useState(1);
+  const isThumbnail = thumbnailWidth !== undefined;
 
   useEffect(() => {
-    if (print) return;
+    if (print || isThumbnail) return;
     const update = () => {
       const s = Math.min(
         window.innerWidth / SLIDE_WIDTH,
@@ -28,7 +32,7 @@ export function SlideFrame({ children, print = false }: Props) {
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, [print]);
+  }, [print, isThumbnail]);
 
   if (print) {
     return (
@@ -37,6 +41,30 @@ export function SlideFrame({ children, print = false }: Props) {
         style={{ width: SLIDE_WIDTH, height: SLIDE_HEIGHT }}
       >
         {children}
+      </div>
+    );
+  }
+
+  if (isThumbnail) {
+    const thumbScale = thumbnailWidth / SLIDE_WIDTH;
+    return (
+      <div
+        className="relative overflow-hidden bg-white shadow-md"
+        style={{
+          width: thumbnailWidth,
+          height: (thumbnailWidth * SLIDE_HEIGHT) / SLIDE_WIDTH,
+        }}
+      >
+        <div
+          className="origin-top-left"
+          style={{
+            width: SLIDE_WIDTH,
+            height: SLIDE_HEIGHT,
+            transform: `scale(${thumbScale})`,
+          }}
+        >
+          {children}
+        </div>
       </div>
     );
   }
