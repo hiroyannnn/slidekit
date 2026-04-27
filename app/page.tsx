@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlideFrame } from "@/components/SlideFrame";
 import { slides } from "@/lib/slides";
@@ -9,6 +9,26 @@ export default function DeckPage() {
   const searchParams = useSearchParams();
   const isPrint = searchParams.get("print") === "1";
   const [index, setIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch((err) => {
+        console.warn("Failed to exit fullscreen:", err);
+      });
+    } else {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.warn("Failed to enter fullscreen:", err);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isPrint) return;
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, [isPrint]);
 
   // Sync with URL hash
   useEffect(() => {
@@ -40,11 +60,18 @@ export default function DeckPage() {
           window.location.hash = String(next + 1);
           return next;
         });
+      } else if (
+        (e.key === "f" || e.key === "F") &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        toggleFullscreen();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isPrint]);
+  }, [isPrint, toggleFullscreen]);
 
   // Print mode: render all slides stacked for PDF export
   if (isPrint) {
@@ -65,8 +92,19 @@ export default function DeckPage() {
   // Screen mode: one slide at a time
   const Slide = slides[index].component;
   return (
-    <SlideFrame>
-      <Slide current={index + 1} total={slides.length} />
-    </SlideFrame>
+    <>
+      <SlideFrame>
+        <Slide current={index + 1} total={slides.length} />
+      </SlideFrame>
+      <button
+        type="button"
+        onClick={toggleFullscreen}
+        aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+        title={isFullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
+        className="fixed bottom-4 right-4 rounded-md bg-slate-900/60 px-3 py-2 text-xs text-white shadow-lg backdrop-blur transition hover:bg-slate-900 print:hidden"
+      >
+        {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+      </button>
+    </>
   );
 }
