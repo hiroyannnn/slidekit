@@ -8,9 +8,10 @@ React (Next.js + Tailwind) で書くスライドテンプレート。ブラウ�
 
 1. `pnpm install && pnpm exec playwright install chromium`
 2. `package.json` の `name` をプロジェクト名に変更
-3. `lib/slides.tsx` を編集してスライドを差し替え(サンプル4枚が編集起点)
-4. `pnpm dev` で http://localhost:3000 を開いて確認
-5. `pnpm export:pdf` で `slides.pdf` を生成
+3. `lib/decks/example.tsx` を編集して中身を差し替えるか、`lib/decks/<id>.tsx`
+   を新規追加して `lib/decks/index.ts` の `decks` 配列に登録
+4. `pnpm dev` で http://localhost:3000(ファイル一覧)を開いてデッキを選択
+5. `pnpm export:pdf` でデッキごとに `slides-<deckId>.pdf` を生成
 
 > Claude Code で作業する場合は `CLAUDE.md` の指針も参照。
 
@@ -25,29 +26,49 @@ pnpm exec playwright install chromium
 
 ```bash
 pnpm dev
-# http://localhost:3000
+# http://localhost:3000  ← ファイル一覧(デッキ一覧)
 ```
 
-- `→` `Space` `PageDown`: 次のスライド
-- `←` `PageUp`: 前のスライド
-- URL末尾の `#3` で3枚目に直接ジャンプ
+- ルートはデッキ一覧ページ。各デッキを `Open` で本編、`Overview` でサムネ一覧
+- デッキ本編 (`/d/<deckId>`) でのキー操作:
+  - `→` `Space` `PageDown`: 次のスライド
+  - `←` `PageUp`: 前のスライド
+  - URL末尾の `#3` で3枚目に直接ジャンプ
+  - `F`: 全画面切り替え
 
-## スライドの追加
+## スライド/デッキの追加
 
-`lib/slides.tsx` の `slides` 配列にコンポーネントを足すだけ。1スライド = 1コンポーネント。
+ミーティング1回ぶん = 1ファイルを `lib/decks/<id>.tsx` に置き、
+`lib/decks/index.ts` の `decks` 配列に追加する。
 
 ```tsx
-function MySlide(props: SlideProps) {
+// lib/decks/all-hands-2026-04.tsx
+import type { DeckDef, SlideProps } from "../types";
+
+function TitleSlide(_: SlideProps) {
   return (
-    <div className="relative h-full w-full p-16">
-      <h2 className="text-5xl font-bold">タイトル</h2>
-      <PageNumber {...props} />
+    <div className="relative flex h-full w-full items-center justify-center">
+      <h1 className="text-7xl font-bold">全体定例 2026/04</h1>
     </div>
   );
 }
 
-// 配列に追加
-{ id: "my-slide", component: MySlide, notes: "発表メモ" }
+export const allHands202604Deck: DeckDef = {
+  id: "all-hands-2026-04",   // → /d/all-hands-2026-04
+  title: "全体定例 2026/04",
+  description: "全体定例で話した内容まとめ",
+  slides: [
+    { id: "title", component: TitleSlide },
+  ],
+};
+```
+
+```ts
+// lib/decks/index.ts
+import { exampleDeck } from "./example";
+import { allHands202604Deck } from "./all-hands-2026-04";
+
+export const decks: DeckDef[] = [exampleDeck, allHands202604Deck];
 ```
 
 スライドは固定 `1280x720` で書く。画面表示時は自動で `transform: scale()` でフィット。
@@ -56,11 +77,11 @@ function MySlide(props: SlideProps) {
 
 ```bash
 pnpm build
-pnpm export:pdf
-# → slides.pdf
+pnpm export:pdf            # 全デッキを slides-<deckId>.pdf に出力
+pnpm export:pdf example    # 1デッキだけ
 ```
 
-手動で出したい場合は `pnpm dev` 起動後に `http://localhost:3000/?print=1` を開いて `Cmd+P` → PDFとして保存。
+手動で出したい場合は `pnpm dev` 起動後に `http://localhost:3000/d/<deckId>?print=1` を開いて `Cmd+P` → PDFとして保存。
 
 ## 設計メモ
 
