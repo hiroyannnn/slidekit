@@ -234,33 +234,35 @@ export default function DeckPage() {
       <SlideFrame>
         <Slide current={safeIndex + 1} total={visibleSlides.length} />
       </SlideFrame>
-      <div className="fixed bottom-4 right-4 flex gap-2 print:hidden">
-        <a
-          href="/"
-          aria-label="Files"
-          title="Files"
-          className="rounded-md bg-slate-900/60 px-3 py-2 text-xs text-white shadow-lg backdrop-blur transition hover:bg-slate-900"
-        >
-          Files
-        </a>
-        <a
-          href={overviewHref}
-          aria-label="Overview"
-          title="Overview"
-          className="rounded-md bg-slate-900/60 px-3 py-2 text-xs text-white shadow-lg backdrop-blur transition hover:bg-slate-900"
-        >
-          Overview
-        </a>
-        <button
-          type="button"
-          onClick={toggleFullscreen}
-          aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-          title={isFullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
-          className="rounded-md bg-slate-900/60 px-3 py-2 text-xs text-white shadow-lg backdrop-blur transition hover:bg-slate-900"
-        >
-          {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-        </button>
-      </div>
+      {!isFullscreen && (
+        <div className="fixed bottom-4 right-4 flex gap-2 print:hidden">
+          <a
+            href="/"
+            aria-label="Files"
+            title="Files"
+            className="rounded-md bg-slate-900/60 px-3 py-2 text-xs text-white shadow-lg backdrop-blur transition hover:bg-slate-900"
+          >
+            Files
+          </a>
+          <a
+            href={overviewHref}
+            aria-label="Overview"
+            title="Overview"
+            className="rounded-md bg-slate-900/60 px-3 py-2 text-xs text-white shadow-lg backdrop-blur transition hover:bg-slate-900"
+          >
+            Overview
+          </a>
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            aria-label="Enter fullscreen"
+            title="Fullscreen (F)"
+            className="rounded-md bg-slate-900/60 px-3 py-2 text-xs text-white shadow-lg backdrop-blur transition hover:bg-slate-900"
+          >
+            Fullscreen
+          </button>
+        </div>
+      )}
     </>
   );
 }
