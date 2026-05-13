@@ -7,9 +7,9 @@
   },
   "packageManager": "pnpm@9.12.3",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "next dev -p 3030",
+    "build": "DECK_DIST_DIR=.next-build next build",
+    "start": "DECK_DIST_DIR=.next-build next start -p 3030",
     "export:pdf": "tsx scripts/export-pdf.ts"
   },
   "dependencies": {
