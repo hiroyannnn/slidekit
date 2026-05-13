@@ -2,6 +2,158 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* Slide entrance: children fade-up in order */
+  @keyframes slide-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slide-strike-grow {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-glow {
+    0%,
+    100% {
+      text-shadow: 0 0 0 transparent;
+    }
+    50% {
+      text-shadow: 0 0 16px rgba(47, 188, 225, 0.6);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .stagger-fade > * {
+      opacity: 0;
+      animation: slide-fade-up 0.55s ease-out forwards;
+    }
+    .stagger-fade > *:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .stagger-fade > *:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+    .stagger-fade > *:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+    .stagger-fade > *:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+    .stagger-fade > *:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+    .stagger-fade > *:nth-child(6) {
+      animation-delay: 0.5s;
+    }
+    .stagger-fade > *:nth-child(7) {
+      animation-delay: 0.6s;
+    }
+    .stagger-fade > *:nth-child(8) {
+      animation-delay: 0.7s;
+    }
+    .stagger-fade > *:nth-child(9) {
+      animation-delay: 0.8s;
+    }
+    .stagger-fade > *:nth-child(10) {
+      animation-delay: 0.9s;
+    }
+
+    /* 「重そう」に出す版 - delay を倍にして遅延感を出す */
+    .stagger-fade-slow > * {
+      opacity: 0;
+      animation: slide-fade-up 0.7s ease-out forwards;
+    }
+    .stagger-fade-slow > *:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    .stagger-fade-slow > *:nth-child(2) {
+      animation-delay: 0.45s;
+    }
+    .stagger-fade-slow > *:nth-child(3) {
+      animation-delay: 0.85s;
+    }
+    .stagger-fade-slow > *:nth-child(4) {
+      animation-delay: 1.3s;
+    }
+    .stagger-fade-slow > *:nth-child(5) {
+      animation-delay: 1.85s;
+    }
+    .stagger-fade-slow > *:nth-child(6) {
+      animation-delay: 2.5s;
+    }
+
+    .scale-in {
+      animation: slide-scale-in 0.6s ease-out forwards;
+    }
+
+    .strike-grow::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      height: 2px;
+      background-color: rgb(251 113 133);
+      transform: translateY(-50%);
+      animation: slide-strike-grow 0.6s ease-out 0.6s forwards;
+      width: 0%;
+    }
+
+    .glow-cyan {
+      animation: slide-glow 2.4s ease-in-out infinite;
+    }
+  }
+
+  /* Print/reduced-motion: snap to final state */
+  @media print, (prefers-reduced-motion: reduce) {
+    .stagger-fade > *,
+    .stagger-fade-slow > *,
+    .scale-in {
+      opacity: 1 !important;
+      animation: none !important;
+      transform: none !important;
+    }
+    .strike-grow::after {
+      width: 100% !important;
+      animation: none !important;
+    }
+    .glow-cyan {
+      animation: none !important;
+    }
+  }
+}
+
 /* Print: each .slide-print becomes one page at exact 1280x720 */
 @page {
   size: 1280px 720px;
